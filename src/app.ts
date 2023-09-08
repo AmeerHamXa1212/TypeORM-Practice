@@ -3,13 +3,14 @@ import express from "express";
 import { DataSource } from "typeorm";
 import dotenv from "dotenv";
 import UserRouter from "./routes/user";
+import TaskRouter from "./routes/task";
 dotenv.config();
 
 const app = express();
 app.use(express.json());
 const Port = process.env.PORT || 3001;
 
-app.use("/todo", UserRouter);
+app.use("/todo", UserRouter, TaskRouter);
 
 export const AppDataSource = new DataSource({
   type: "postgres",

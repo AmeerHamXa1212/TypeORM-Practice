@@ -1,4 +1,3 @@
-import { DataSource } from "typeorm";
 import { User } from "../entities/user";
 import express from "express";
 import { Request, Response } from "express"; // Import Request and Response types from Express
