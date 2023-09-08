@@ -2,15 +2,16 @@ import "reflect-metadata";
 import express from "express";
 import { DataSource } from "typeorm";
 import dotenv from "dotenv";
+import UserRouter from "./routes/user";
 dotenv.config();
 
 const app = express();
-
 app.use(express.json());
-
 const Port = process.env.PORT || 3001;
 
-const AppDataSource = new DataSource({
+app.use("/todo", UserRouter);
+
+export const AppDataSource = new DataSource({
   type: "postgres",
   host: "localhost",
   username: "postgres",
@@ -19,7 +20,7 @@ const AppDataSource = new DataSource({
   port: 5432,
   entities: ["src/entities/*{.ts,.js}"],
   synchronize: true,
-  logging: false,
+  logging: true,
 });
 
 AppDataSource.initialize()
