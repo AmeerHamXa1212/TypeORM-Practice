@@ -3,7 +3,7 @@ import { GetAllUsers, CreateUser, FindUserByID } from "../controllers/user";
 
 const UserRouter = Router();
 
-UserRouter.get("/users", GetAllUsers);
+UserRouter.get("/user", GetAllUsers);
 UserRouter.post("/newuser", CreateUser);
 UserRouter.get("/users/:id", FindUserByID);
 

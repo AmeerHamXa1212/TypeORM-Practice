@@ -4,6 +4,7 @@ import { Request, Response } from "express"; // Import Request and Response type
 import "reflect-metadata";
 import { AppDataSource } from "../app";
 import Joi from "joi";
+import { checkAndReturnIfEmpty } from "../utility/nullcheck";
 
 const app = express();
 app.use(express.json());
@@ -16,8 +17,8 @@ const ValidateUser = Joi.object({
 export const GetAllUsers = async function (req: Request, res: Response) {
   const UserRepo = AppDataSource.getRepository(User);
   const AllUsers = await UserRepo.find();
-  if (AllUsers.length === 0 || !AllUsers) {
-    return res.status(404).json("No Users Found/Exists");
+  if (checkAndReturnIfEmpty(AllUsers, res, "No Users Found/Exists")) {
+    return;
   }
   return res.status(200).json(AllUsers);
 };
@@ -35,15 +36,14 @@ export const CreateUser = async function (req: Request, res: Response) {
 };
 export const FindUserByID = async function (req: Request, res: Response) {
   const userId: number = parseInt(req.params.id, 10);
-  if (userId < 1) {
+  if (userId < 1 || isNaN(userId)) {
     return res.status(400).json("Bad Request");
   }
-
   const UserRepo = AppDataSource.getRepository(User);
 
   const FoundUser = await UserRepo.findOne({ where: { id: userId } });
-  if (!FoundUser) {
-    return res.status(404).json("User Not found");
+  if (checkAndReturnIfEmpty(FoundUser, res, "User Not found")) {
+    return;
   }
   return res.status(200).json(FoundUser);
 };

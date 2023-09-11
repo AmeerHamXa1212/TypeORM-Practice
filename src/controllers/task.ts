@@ -19,14 +19,9 @@ export const GetAllTask = async function (req: Request, res: Response) {
   const TaskRepo = AppDataSource.getRepository(Tasks);
   const AllTask = await TaskRepo.find();
 
-  //   checkNullAndEmpty(AllTask,"No Task Found")
   if (checkAndReturnIfEmpty(AllTask, res, "No tasks found")) {
     return;
   }
-
-  //   if (AllTask.length === 0 || !AllTask) {
-  //     return res.status(404).json("No tasks found");
-  //   }
   return res.status(200).json(AllTask);
 };
 
