@@ -1,34 +1,34 @@
+import "reflect-metadata";
+import express from "express";
+import { DataSource } from "typeorm";
+import dotenv from "dotenv";
+import UserRouter from "./routes/user";
+import TaskRouter from "./routes/task";
+dotenv.config();
 
-import 'reflect-metadata'
-import express from 'express'
-import { DataSource } from 'typeorm'
+const app = express();
+app.use(express.json());
+const Port = process.env.PORT || 3001;
 
-const app = express()
+app.use("/todo", UserRouter, TaskRouter);
 
-app.use(express.json())
+export const AppDataSource = new DataSource({
+  type: "postgres",
+  host: "localhost",
+  username: "postgres",
+  database: process.env.DATABASE,
+  password: process.env.DATABASE_KEY,
+  port: 5432,
+  entities: ["src/entities/*{.ts,.js}"],
+  synchronize: true,
+  logging: true,
+});
 
-const PORT = 8000
-
-const AppDataSource = new DataSource({
-    type:'postgres',
-    host:'localhost',
-    port:5432, // should be in .env file
-    username:'postgres', // should be in .env file
-    password: 'postgres', // should be in .env file
-    database:'typeorm_db', // should be in .env file
-    entities:["src/entities/*{.ts,.js}"],
-    synchronize:true, 
-    logging:true,
-})
-
-AppDataSource.initialize().then(()=>{
-    app.listen(PORT,()=>{
-        console.log("Running")
-    })
-}).catch(err=>{console.log(err)})
-
-
-app.get('/', function(req,res) {
-    res.send("Hello")
-})
-
+AppDataSource.initialize()
+  .then(() => {
+    console.log(`Connection to postgreSQL Database Successful`);
+    app.listen(Port, () => console.info(`Server is running at Port ${Port}`));
+  })
+  .catch((err) => {
+    console.log(err);
+  });
